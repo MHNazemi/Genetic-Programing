@@ -154,20 +154,16 @@ def CrossOver(sizeOfPool):
         firstIndex=randint(0,endOfSelection-1)
         firstChromosoeTree=pool[firstIndex].tree
 
-        tempChromosoe=pool[endOfSelection-1]
-        pool[endOfSelection-1]=pool[firstIndex]
-        pool[firstIndex]=tempChromosoe
+        pool[firstIndex] , pool[endOfSelection-1] = pool[endOfSelection-1],pool[firstIndex]
 
         endOfSelection=endOfSelection-1
 
         secondIndex=randint(0,endOfSelection-1)
         secondChromosoeTree=pool[secondIndex].tree
-        tempChromosoe=pool[endOfSelection-1]
-        pool[endOfSelection-1]=pool[secondIndex]
-        pool[secondIndex]=tempChromosoe
+
+        pool[secondIndex] , pool[endOfSelection-1] = pool[endOfSelection-1],pool[secondIndex]
 
         endOfSelection=endOfSelection-1
-
 
         firstNodeMaxLevel=0
         secondNodeMaxLevel=0
@@ -189,14 +185,13 @@ def CrossOver(sizeOfPool):
         firstChromosoeSelectedLevelNodes=[x for x in firstChromosoeTree.nodes if x.level==selectedLevel]
         secondChromosoeSelectedLevelNodes=[x for x in secondChromosoeTree.nodes if x.level==selectedLevel]
 
-        if (len(firstChromosoeSelectedLevelNodes)< len(secondChromosoeSelectedLevelNodes)):
-            selectionNodeIndex=randint(0,len(firstChromosoeSelectedLevelNodes)-1)
-
-        else:
-            selectionNodeIndex=randint(0,len(secondChromosoeSelectedLevelNodes)-1)
-
+        selectionNodeIndex=randint(0,len(firstChromosoeSelectedLevelNodes)-1)
         firstNode=firstChromosoeSelectedLevelNodes[selectionNodeIndex]
+
+        selectionNodeIndex=randint(0,len(secondChromosoeSelectedLevelNodes)-1)
         secondNode=secondChromosoeSelectedLevelNodes[selectionNodeIndex]
+
+
 
         firstNodeParent=firstNode.parent
         secondNodeParent=secondNode.parent
@@ -215,20 +210,52 @@ def CrossOver(sizeOfPool):
             secondNodeParent.leftChildNode=firstNode
             firstNode.parent=secondNodeParent
 
+        ReParseNodesOfAChromosome(firstChromosoeTree)
+        ReParseNodesOfAChromosome(secondChromosoeTree)
 
-def Generations(generationCount):
+
+
+
+def ReParseNodesOfAChromosome(tree):
+    tree.nodes=[]
+    node=tree.mainNode
+
+    stackOfParse=[]
+    stackOfParse.append(node)
+
+    while(len(stackOfParse)!=0):
+        node=stackOfParse.pop()
+        tree.nodes.append(node)
+        if (not node.leaf):
+            stackOfParse.append(node.rightChildNode)
+            stackOfParse.append(node.leftChildNode)
+
+
+def Generations(generationCount,pool):
     for i in range(0,generationCount):
         for row in parsedArray:
             dictValue=dict()
             dictValue[1]=1
             dictValue[0]=0
-            for i in range(0,5):
-                dictValue['x'+str((5-i))]=int(row[i])
+            for t in range(0,5):
+                dictValue['x'+str((5-t))]=int(row[t])
             CalculateFittnessOFthePool(dictValue,int(row[5]))
+
+
         pool=InitilizePool(60)
+
+        if (i==0):
+            for k in range(0,60):
+                print(pool[k],pool[k].fitness)
+            print('after 1000 generation')
+
         for chromosoe in pool:
             chromosoe.fitness=0
+
         CrossOver(60)
+    return pool
+
+
 
 
 
@@ -237,30 +264,19 @@ operatorsAndOperands=['&','|','x1','x2','x3','x4','x5']
 operands=['x1','x2','x3','x4','x5']
 pool=[]
 
-
 parsedArray=ParseData('test')
 CreateRandomPool(60)
-"""
+pool=Generations(100,pool)
 for row in parsedArray:
     dictValue=dict()
     dictValue[1]=1
     dictValue[0]=0
-    for i in range(0,5):
-        dictValue['x'+str((5-i))]=int(row[i])
+    for t in range(0,5):
+        dictValue['x'+str((5-t))]=int(row[t])
     CalculateFittnessOFthePool(dictValue,int(row[5]))
 
-
-print('adad')
-pool=InitilizePool(60)
-for chromosoe in pool:
-    chromosoe.fitness=0
-print('aaaaa')
-CrossOver(60)
-"""
-
-Generations(200)
-
 for i in range(0,60):
-    print(pool[i].fitness)
+    print(pool[i],pool[i].fitness)
+
 
 __author__ = 'Nazemi'

@@ -52,7 +52,7 @@ def CreateRandomPool(sizeOfPool):
                 break
             else:
                 node=nodesQueue.get()
-                if (node.level<3):
+                if (node.level<2):
                     node.value=operators[randint(0,1)]
                     if (node.value=='&' or node.value=='|'):
                         tempNode=Node()
@@ -67,7 +67,7 @@ def CreateRandomPool(sizeOfPool):
                         node.leftChildNode=tempNode
                         nodesQueue.put(tempNode)
                         nodes.append(tempNode)
-                elif (node.level==3):
+                elif (node.level>=2):
                     node.value=operatorsAndOperands[randint(0,6)]
                     if (node.value=='&' or node.value=='|'):
                         tempNode=Node()
@@ -151,7 +151,7 @@ def CrossOver(sizeOfPool):
     endOfSelection=sizeOfPool
     for i in range(0,int(sizeOfPool/2)):
 
-        firstIndex=randint(0,endOfSelection)
+        firstIndex=randint(0,endOfSelection-1)
         firstChromosoeTree=pool[firstIndex].tree
 
         tempChromosoe=pool[endOfSelection-1]
@@ -160,7 +160,7 @@ def CrossOver(sizeOfPool):
 
         endOfSelection=endOfSelection-1
 
-        secondIndex=randint(0,endOfSelection)
+        secondIndex=randint(0,endOfSelection-1)
         secondChromosoeTree=pool[secondIndex].tree
         tempChromosoe=pool[endOfSelection-1]
         pool[endOfSelection-1]=pool[secondIndex]
@@ -258,7 +258,7 @@ print('aaaaa')
 CrossOver(60)
 """
 
-Generations(100)
+Generations(200)
 
 for i in range(0,60):
     print(pool[i].fitness)

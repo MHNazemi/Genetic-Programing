@@ -233,30 +233,31 @@ def ReParseNodesOfAChromosome(tree):
 
 def Generations(generationCount,pool):
     for i in range(0,generationCount):
-        for row in parsedArray:
-            dictValue=dict()
-            dictValue[1]=1
-            dictValue[0]=0
-            for t in range(0,5):
-                dictValue['x'+str((5-t))]=int(row[t])
-            CalculateFittnessOFthePool(dictValue,int(row[5]))
+        Fitness()
 
-
-        pool=InitilizePool(60)
+        CrossOver(poolSize)
+        InitilizePool(poolSize)
 
         if (i==0):
-            for k in range(0,60):
+            for k in range(0,poolSize):
                 print(pool[k],pool[k].fitness)
             print('after 1000 generation')
 
         for chromosoe in pool:
             chromosoe.fitness=0
 
-        CrossOver(60)
     return pool
 
+def Fitness():
+    for row in parsedArray:
+        dictValue=dict()
+        dictValue[1]=1
+        dictValue[0]=0
+        for t in range(0,5):
+            dictValue['x'+str((5-t))]=int(row[t])
+        CalculateFittnessOFthePool(dictValue,int(row[5]))
 
-
+poolSize=70
 
 
 operators=['&','|']
@@ -265,17 +266,11 @@ operands=['x1','x2','x3','x4','x5']
 pool=[]
 
 parsedArray=ParseData('test')
-CreateRandomPool(60)
+CreateRandomPool(poolSize)
 pool=Generations(100,pool)
-for row in parsedArray:
-    dictValue=dict()
-    dictValue[1]=1
-    dictValue[0]=0
-    for t in range(0,5):
-        dictValue['x'+str((5-t))]=int(row[t])
-    CalculateFittnessOFthePool(dictValue,int(row[5]))
 
-for i in range(0,60):
+Fitness()
+for i in range(0,poolSize):
     print(pool[i],pool[i].fitness)
 
 

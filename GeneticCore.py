@@ -89,6 +89,15 @@ def CreateRandomPool(sizeOfPool):
                     node.value=operands[randint(0,4)]
                     node.leaf=True
 
+def Fitness():
+    for row in parsedArray:
+        dictValue=dict()
+        dictValue[1]=1
+        dictValue[0]=0
+        for t in range(0,5):
+            dictValue['x'+str((5-t))]=int(row[t])
+        CalculateFittnessOFthePool(dictValue,int(row[5]))
+
 def CalculateFittnessOFthePool(valueDict,finallResult):
     for i in range(0,len(pool)):
         chromosome=pool[i]
@@ -105,7 +114,7 @@ def CalculateFittnessOFthePool(valueDict,finallResult):
             node=operationStack.pop()
             if(node.leaf and readyStateNode != None):
                 operatorNode=operationStack.pop()
-                if (operatorNode=='&'):
+                if (operatorNode.value=='&'):
                     result=valueDict[node.value] & valueDict[readyStateNode.value]
                 else:
                     result=valueDict[node.value] | valueDict[readyStateNode.value]
@@ -233,31 +242,34 @@ def ReParseNodesOfAChromosome(tree):
 
 def Generations(generationCount,pool):
     for i in range(0,generationCount):
-        Fitness()
+
+
+
 
         CrossOver(poolSize)
-        InitilizePool(poolSize)
 
+        Fitness()
+        maxfit=0
+        maxNode=None
         if (i==0):
             for k in range(0,poolSize):
-                print(pool[k],pool[k].fitness)
-            print('after 1000 generation')
+                if (pool[i].fitness>maxfit):
+                    maxfit=pool[i].fitness
+                maxNode=pool[i]
+            print(maxfit,maxNode)
+
+        InitilizePool(poolSize)
+
+
 
         for chromosoe in pool:
             chromosoe.fitness=0
 
     return pool
 
-def Fitness():
-    for row in parsedArray:
-        dictValue=dict()
-        dictValue[1]=1
-        dictValue[0]=0
-        for t in range(0,5):
-            dictValue['x'+str((5-t))]=int(row[t])
-        CalculateFittnessOFthePool(dictValue,int(row[5]))
 
-poolSize=70
+
+poolSize=60
 
 
 operators=['&','|']
@@ -267,11 +279,17 @@ pool=[]
 
 parsedArray=ParseData('test')
 CreateRandomPool(poolSize)
-pool=Generations(100,pool)
+pool=Generations(1000,pool)
 
 Fitness()
+maxfit=0
+maxNode=None
 for i in range(0,poolSize):
     print(pool[i],pool[i].fitness)
+    if (pool[i].fitness>maxfit):
+        maxfit=pool[i].fitness
+        maxNode=pool[i]
+print(maxfit,maxNode)
 
 
 __author__ = 'Nazemi'
